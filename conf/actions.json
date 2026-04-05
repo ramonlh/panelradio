@@ -1,0 +1,129 @@
+{
+  "actions": [
+    {
+      "id": "aprs",
+      "title": "APRS",
+      "subtitle": "Dire Wolf + YAAC",
+      "kind": "script",
+      "script": "/home/ramon/radio/bin/radio-aprs.sh",
+      "icon": "network-wireless-symbolic",
+      "icon_path": "/home/ramon/radio/iconos/yaac.png",
+      "pat_allowed": false,
+      "css": "aprs",
+      "resources": [
+        "Usb2Rig"
+      ]
+    },
+    {
+      "id": "digital",
+      "title": "Digital",
+      "subtitle": "fldigi + flrig",
+      "kind": "script",
+      "script": "/home/ramon/radio/bin/radio-fldigi.sh",
+      "icon": "audio-x-generic-symbolic",
+      "icon_path": "/home/ramon/radio/iconos/fldigi.png",
+      "pat_allowed": false,
+      "css": "digital",
+      "resources": [
+        "SDR chino"
+      ]
+    },
+    {
+      "id": "wsjt",
+      "title": "WSJT-X",
+      "subtitle": "FT8 / FT4 / WSPR",
+      "kind": "script",
+      "script": "/home/ramon/radio/bin/radio-wsjtx.sh",
+      "icon": "media-playback-start-symbolic",
+      "icon_path": "/home/ramon/radio/iconos/wsjtx.png",
+      "pat_allowed": false,
+      "css": "wsjt",
+      "resources": [
+        "Icom 7300MK2"
+      ]
+    },
+    {
+      "id": "pat",
+      "title": "PAT",
+      "subtitle": "arrancar / parar Winlink",
+      "kind": "toggle_pat",
+      "script_start": "/home/ramon/radio/bin/radio-pat.sh",
+      "command_stop": "pkill -x pat || true",
+      "icon": "mail-send-receive-symbolic",
+      "icon_path": "/home/ramon/radio/iconos/pat.png",
+      "pat_allowed": true,
+      "css": "success",
+      "resources": [
+        "Usb2Rig"
+      ]
+    },
+    {
+      "id": "radiosonde",
+      "title": "Radiosonda",
+      "subtitle": "arrancar / parar auto_rx",
+      "kind": "toggle_radiosonde",
+      "script_start": "/home/ramon/bin/radiosonde-start.sh",
+      "script_stop": "/home/ramon/bin/radiosonde-stop.sh",
+      "icon": "weather-overcast-symbolic",
+      "pat_allowed": true,
+      "css": "radiosonde",
+      "resources": [
+        "rtlsdr"
+      ]
+    },
+    {
+      "id": "sdrangel",
+      "title": "SDRAngel",
+      "subtitle": "SDR/Analyzer frontend",
+      "icon": "applications-system-symbolic",
+      "css": "accent",
+      "pat_allowed": true,
+      "resources": [
+        "SDR NoElec"
+      ],
+      "kind": "toggle",
+      "script_start": "/home/ramon/radio/bin/sdrangel-start.sh",
+      "script_stop": "/home/ramon/radio/bin/sdrangel-stop.sh",
+      "script_status": "/home/ramon/radio/bin/sdrangel-status.sh"
+    },
+    {
+      "id": "ham_radio_de_luxe",
+      "title": "Ham Radio de Luxe",
+      "subtitle": "Ham Radio de Luxe",
+      "icon": "applications-system-symbolic",
+      "css": "success",
+      "pat_allowed": true,
+      "resources": [
+        "Icom 7300MK2"
+      ],
+      "kind": "toggle",
+      "script_start": "/home/ramon/radio/bin/ham-radio-de-luxe-start.sh",
+      "script_stop": "/home/ramon/radio/bin/ham-radio-de-luxe-stop.sh",
+      "script_status": "/home/ramon/radio/bin/ham-radio-de-luxe-status.sh"
+    },
+    {
+      "id": "wfview",
+      "title": "WFview",
+      "subtitle": "Radio Controller",
+      "icon": "applications-system-symbolic",
+      "css": "aprs",
+      "pat_allowed": true,
+      "resources": [
+        "Icom 7300MK2"
+      ],
+      "kind": "script",
+      "script": "/home/ramon/radio/bin/wfview-start.sh"
+    },
+    {
+      "id": "chirp",
+      "title": "CHIRP",
+      "subtitle": "Radio Programming Tool",
+      "icon": "applications-system-symbolic",
+      "css": "panel",
+      "pat_allowed": true,
+      "resources": [],
+      "kind": "script",
+      "script": "/home/ramon/radio/bin/chirp-start.sh"
+    }
+  ]
+}

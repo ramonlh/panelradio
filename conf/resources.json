@@ -1,0 +1,34 @@
+{
+  "resources": [
+    {
+      "id": "Icom 7300MK2",
+      "title": "ICOM IC-7300MKII",
+      "description": ""
+    },
+    {
+      "id": "SDR NoElec",
+      "title": "SDR NoElec",
+      "description": ""
+    },
+    {
+      "id": "SDR chino",
+      "title": "SDR chino",
+      "description": ""
+    },
+    {
+      "id": "Usb2Rig",
+      "title": "USB2RIG",
+      "description": "Pincho USB con Audio"
+    },
+    {
+      "id": "sBitxDE",
+      "title": "sBitxDE",
+      "description": "sBitx DE versión"
+    },
+    {
+      "id": "sBitxv2",
+      "title": "sBitxV2",
+      "description": "sBitx versión 2"
+    }
+  ]
+}

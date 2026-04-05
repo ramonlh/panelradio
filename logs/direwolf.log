@@ -1,0 +1,31 @@
+Dire Wolf version 1.7
+Includes optional support for:  gpsd hamlib cm108-ptt
+
+Reading config file /home/ramon/radio/conf/direwolf.conf
+Audio device for both receive and transmit: plughw:1,0  (channel 0)
+Channel 0: 1200 baud, AFSK 1200 & 2200 Hz, A+, 44100 sample rate.
+Using /dev/hidraw3 GPIO 3 for channel 0 PTT control.
+Ready to accept AGW client application 0 on port 8000 ...
+Ready to accept KISS TCP client application 0 on port 8001 ...
+
+Attached to KISS TCP client application 0 on port 8001 ...
+
+Ready to accept KISS TCP client application 1 on port 8001 ...
+KISS protocol set hardware "TNC:", chan 0
+Could not open /dev/hidraw3 for write, errno=13
+Type "ls -l /dev/hidraw3" and verify that it has audio group rw similar to this:
+    crw-rw---- 1 root audio 247, 0 Oct  6 19:24 /dev/hidraw3
+rather than root-only access like this:
+    crw------- 1 root root 247, 0 Sep 24 09:40 /dev/hidraw3
+ERROR:  PTT for channel 0 has failed.  See User Guide for troubleshooting tips.
+[0L] EA4GZI>BEACON:@165753h4029.01N/00341.68W-144.800MHz TOFF  /A=002297 Home station
+[0L] EA4GZI>BEACON,WIDE1-1,WIDE2-1:>IN80DL1-Madrid<0x0d>
+Could not open /dev/hidraw3 for write, errno=13
+Type "ls -l /dev/hidraw3" and verify that it has audio group rw similar to this:
+    crw-rw---- 1 root audio 247, 0 Oct  6 19:24 /dev/hidraw3
+rather than root-only access like this:
+    crw------- 1 root root 247, 0 Sep 24 09:40 /dev/hidraw3
+ERROR:  PTT for channel 0 has failed.  See User Guide for troubleshooting tips.
+
+KISS client application 0 on TCP port 8001 has gone away.
+

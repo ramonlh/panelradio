@@ -1,0 +1,15 @@
+0124:err:ole:com_get_class_object apartment not initialised
+0124:err:winediag:ntlm_check_version ntlm_auth was not found. Make sure that ntlm_auth >= 3.0.25 is in your path. Usually, you can find it in the winbind package of your distribution.
+0124:err:ntlm:ntlm_LsaApInitializePackage no NTLM support, expect problems
+0124:err:ole:com_get_class_object apartment not initialised
+0124:err:winediag:ntlm_check_version ntlm_auth was not found. Make sure that ntlm_auth >= 3.0.25 is in your path. Usually, you can find it in the winbind package of your distribution.
+0124:err:ntlm:ntlm_LsaApInitializePackage no NTLM support, expect problems
+0124:err:ole:com_get_class_object apartment not initialised
+0124:err:winediag:ntlm_check_version ntlm_auth was not found. Make sure that ntlm_auth >= 3.0.25 is in your path. Usually, you can find it in the winbind package of your distribution.
+0124:err:ntlm:ntlm_LsaApInitializePackage no NTLM support, expect problems
+016c:err:ole:com_get_class_object apartment not initialised
+016c:err:winediag:ntlm_check_version ntlm_auth was not found. Make sure that ntlm_auth >= 3.0.25 is in your path. Usually, you can find it in the winbind package of your distribution.
+016c:err:ntlm:ntlm_LsaApInitializePackage no NTLM support, expect problems
+0124:err:ole:com_get_class_object apartment not initialised
+0124:err:winediag:ntlm_check_version ntlm_auth was not found. Make sure that ntlm_auth >= 3.0.25 is in your path. Usually, you can find it in the winbind package of your distribution.
+0124:err:ntlm:ntlm_LsaApInitializePackage no NTLM support, expect problems
