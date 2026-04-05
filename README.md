@@ -1,5 +1,12 @@
 # Radio Panel for Linux
 
+![Platform](https://img.shields.io/badge/platform-Linux-1f6feb)
+![Python](https://img.shields.io/badge/python-3.x-3776AB)
+![GTK](https://img.shields.io/badge/GTK-4-4a154b)
+![Desktop](https://img.shields.io/badge/interface-GTK4%20desktop-0f766e)
+![Config](https://img.shields.io/badge/config-actions.json%20%7C%20resources.json-7c3aed)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 A GTK4 desktop control panel for launching, stopping, and monitoring radio-related applications on Linux.
 
 This project was built to provide a practical **single control panel** for a personal radio station, with support for:
@@ -456,12 +463,5 @@ Check:
 
 ## License
 
-Use the license that best fits your project.
+This project is released under the **MIT License**.
 
-If you do not already have one, a simple option is `MIT`.
-
----
-
-## Author
-
-Designed and adapted for a personal radio station workflow on Linux.
