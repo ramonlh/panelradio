@@ -1,0 +1,20 @@
+{
+  "web_links": [
+    {
+      "title": "APRS",
+      "url": "http://aprs.fi"
+    },
+    {
+      "title": "QRZ",
+      "url": "https://www.qrz.com"
+    },
+    {
+      "title": "Sondehub",
+      "url": "https://sondehub.org/#!mt=Mapnik&mz=6&qm=3h&mc=39.53794,-4.53735&box=aboutbox"
+    },
+    {
+      "title": "N2YO Sat",
+      "url": "https://www.n2yo.com/"
+    }
+  ]
+}

@@ -23,6 +23,7 @@ ICON_DIR = APP_DIR / "iconos"
 RADIO_ENV = CONF_DIR / "radio.env"
 ACTIONS_JSON = CONF_DIR / "actions.json"
 RESOURCES_JSON = CONF_DIR / "resources.json"
+WEBS_JSON = CONF_DIR / "web_links.json"
 ICON_PATH = ICON_DIR / "radio.svg"
 
 DEFAULT_ENV = {
@@ -153,6 +154,24 @@ button:hover {
 .toolbar-btn label,
 .toolbar-btn image {
   color: #111827;
+}
+.web-mini-btn {
+  min-height: 30px;
+  padding: 3px 12px;
+  background: #99f6e4;
+  border: 1px solid #2dd4bf;
+  border-radius: 999px;
+  box-shadow: none;
+}
+.web-mini-btn:hover {
+  background: #5eead4;
+  border: 1px solid #14b8a6;
+}
+.web-mini-btn label,
+.web-mini-btn image {
+  color: #134e4a;
+  font-size: 12px;
+  font-weight: 700;
 }
 textview,
 textview text {
@@ -401,6 +420,61 @@ def parse_resource_list(value: str | list[str] | None) -> list[str]:
         seen.add(token)
         out.append(token)
     return out
+
+
+def parse_web_links(value: Any) -> list[dict[str, str]]:
+    links: list[dict[str, str]] = []
+    if value is None:
+        return links
+
+    if isinstance(value, list):
+        for item in value:
+            if not isinstance(item, dict):
+                continue
+            title = str(item.get("title", "")).strip()
+            url = str(item.get("url", "")).strip()
+            if title and url:
+                links.append({"title": title, "url": url})
+        return links
+
+    text = str(value)
+    for raw_line in text.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        if "|" in line:
+            title, url = line.split("|", 1)
+        else:
+            title, url = line, line
+        title = title.strip()
+        url = url.strip()
+        if title and url:
+            links.append({"title": title, "url": url})
+    return links
+
+
+def web_links_to_text(links: Any) -> str:
+    parsed = parse_web_links(links)
+    return "\n".join(f"{item['title']} | {item['url']}" for item in parsed)
+
+
+def write_default_web_links() -> None:
+    if WEBS_JSON.exists():
+        return
+    WEBS_JSON.write_text(json.dumps({"web_links": []}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def load_global_web_links() -> list[dict[str, str]]:
+    write_default_web_links()
+    try:
+        payload = json.loads(WEBS_JSON.read_text(encoding="utf-8"))
+        return parse_web_links(payload.get("web_links"))
+    except Exception:
+        return []
+
+
+def save_global_web_links(links: list[dict[str, str]]) -> None:
+    WEBS_JSON.write_text(json.dumps({"web_links": links}, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
 
 def resource_caption(resources: list[dict[str, str]]) -> str:
@@ -769,6 +843,66 @@ class RadioPanelWindow(Gtk.ApplicationWindow):
         if not hasattr(self, "bottom_status"):
             return
         self.bottom_status.set_visible(self.stack.get_visible_child_name() == "panel")
+
+    def _make_web_button(self, title: str, url: str) -> Gtk.Button:
+        button = Gtk.Button(label=title)
+        button.add_css_class("web-mini-btn")
+        button.connect("clicked", lambda _btn: self._open_web_link(title, url))
+        return button
+
+    def _open_web_link(self, title: str, url: str) -> None:
+        subprocess.Popen(["xdg-open", url], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        self._append_log(f"Abierta web '{title}': {url}")
+        self._set_runtime_state("Web abierta", title, "ok")
+
+    def _on_edit_global_webs(self, _button) -> None:
+        current_links = load_global_web_links()
+
+        dialog = Gtk.Dialog(transient_for=self, modal=True, title="Webs rápidas")
+        dialog.add_button("Cancelar", Gtk.ResponseType.CANCEL)
+        dialog.add_button("Guardar", Gtk.ResponseType.OK)
+        content = dialog.get_content_area()
+        content.set_spacing(10)
+
+        form = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        form.set_margin_top(12)
+        form.set_margin_bottom(12)
+        form.set_margin_start(12)
+        form.set_margin_end(12)
+
+        info = Gtk.Label(label="Una línea por botón con formato: Título | URL")
+        info.set_wrap(True)
+        info.set_xalign(0.0)
+
+        webs_text = Gtk.TextView()
+        webs_text.set_wrap_mode(Gtk.WrapMode.WORD_CHAR)
+        webs_text.set_monospace(True)
+        buf = webs_text.get_buffer()
+        buf.set_text(web_links_to_text(current_links))
+
+        webs_scroll = Gtk.ScrolledWindow()
+        webs_scroll.set_min_content_height(180)
+        webs_scroll.set_child(webs_text)
+
+        form.append(info)
+        form.append(webs_scroll)
+        content.append(form)
+
+        def on_response(dlg, response):
+            if response != Gtk.ResponseType.OK:
+                dlg.close()
+                return
+            buf = webs_text.get_buffer()
+            value = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), True)
+            links = parse_web_links(value)
+            save_global_web_links(links)
+            self._append_log("Webs rápidas actualizadas")
+            self._set_runtime_state("Webs actualizadas", f"{len(links)} botones web guardados.", "ok")
+            self._rebuild_panel_page()
+            dlg.close()
+
+        dialog.connect("response", on_response)
+        dialog.show()
 
     def _rebuild_panel_page(self) -> None:
         self.actions = load_actions()
@@ -1549,6 +1683,25 @@ class RadioPanelWindow(Gtk.ApplicationWindow):
             flow.insert(button, -1)
 
         outer.append(flow)
+
+        global_webs = load_global_web_links()
+        if global_webs:
+            webs_card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+            webs_card.add_css_class("card")
+            webs_card.add_css_class("panel")
+
+            webs_title = Gtk.Label(label="Webs rápidas")
+            webs_title.add_css_class("section-title")
+            webs_title.set_xalign(0.0)
+            webs_card.append(webs_title)
+
+            webs_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=4)
+            webs_row.set_halign(Gtk.Align.CENTER)
+            for link in global_webs:
+                webs_row.append(self._make_web_button(link["title"], link["url"]))
+            webs_card.append(webs_row)
+            outer.append(webs_card)
+
         return outer
 
     def _build_config_page(self) -> Gtk.Widget:
@@ -1614,6 +1767,9 @@ class RadioPanelWindow(Gtk.ApplicationWindow):
         add_btn = self._make_text_icon_button("Añadir programa", "list-add-symbolic")
         add_btn.connect("clicked", self._on_add_program)
 
+        webs_btn = self._make_text_icon_button("Webs rápidas", "applications-internet-symbolic")
+        webs_btn.connect("clicked", self._on_edit_global_webs)
+
         edit_res_btn = self._make_text_icon_button("Recursos programa", "document-edit-symbolic")
         edit_res_btn.connect("clicked", self._on_edit_program_resources)
 
@@ -1624,6 +1780,7 @@ class RadioPanelWindow(Gtk.ApplicationWindow):
         buttons.append(save_btn)
         buttons.append(reload_btn)
         buttons.append(add_btn)
+        buttons.append(webs_btn)
         buttons.append(edit_res_btn)
         buttons.append(del_btn)
         box.append(buttons)
@@ -1889,6 +2046,7 @@ class RadioPanelApp(Gtk.Application):
         write_default_env()
         write_default_actions()
         write_default_resources()
+        write_default_web_links()
         win = self.props.active_window
         if win is None:
             win = RadioPanelWindow(app)

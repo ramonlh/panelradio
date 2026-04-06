@@ -4,12 +4,12 @@
 ![Python](https://img.shields.io/badge/python-3.x-3776AB)
 ![GTK](https://img.shields.io/badge/GTK-4-4a154b)
 ![Desktop](https://img.shields.io/badge/interface-GTK4%20desktop-0f766e)
-![Config](https://img.shields.io/badge/config-actions.json%20%7C%20resources.json-7c3aed)
+![Config](https://img.shields.io/badge/config-actions.json%20%7C%20resources.json%20%7C%20web_links.json-7c3aed)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-A GTK4 desktop control panel for launching, stopping, and monitoring radio-related applications on Linux.
+A GTK4 desktop control panel for launching, stopping, monitoring, and organizing radio-related applications on Linux.
 
-This project was built to provide a practical **single control panel** for a personal radio station, with support for:
+This project provides a practical **single control panel** for a personal radio station, with support for:
 
 - APRS (`Dire Wolf + YAAC`)
 - Digital modes (`fldigi + flrig`)
@@ -17,6 +17,7 @@ This project was built to provide a practical **single control panel** for a per
 - PAT / Winlink
 - Radiosonde / `auto_rx`
 - User-defined programs added from the panel itself
+- Global quick-access web buttons
 
 The panel is designed for **Linux Mint / Debian-family systems** and uses **Python 3 + GTK4 (PyGObject)**.
 
@@ -25,18 +26,21 @@ The panel is designed for **Linux Mint / Debian-family systems** and uses **Pyth
 ## Main features
 
 - Large colored buttons for each application
+- Smaller quick-access web buttons under the main applications area
 - Start/stop support for fixed applications
 - Toggle buttons for applications that can be started and stopped from the same button
-- Status area with live log messages
 - Optional **RUN** mark on buttons when a program is active
+- Status area with live log messages and autoscroll
 - Built-in configuration page
 - Add custom programs from the GUI
 - Delete custom programs from the GUI
 - Automatic generation of `start`, `stop`, and `status` shell script templates
 - Resource-based compatibility system
 - Resource catalog management from the GUI
-- Assign resources to programs from the GUI
-- Prevent launching incompatible programs that need the same hardware/resource
+- Edit resource assignments for **all** managed programs, including built-in ones
+- Global quick web buttons managed from the GUI
+- Checkbox-based resource selection
+- Optional hiding of the lower status/log area while using the configuration page
 
 ---
 
@@ -44,11 +48,12 @@ The panel is designed for **Linux Mint / Debian-family systems** and uses **Pyth
 
 When several radio programs share the same hardware, audio device, CAT interface, SDR, or serial port, it is easy to start incompatible programs accidentally.
 
-This panel solves that by combining:
+This panel combines:
 
-1. a simple launcher
+1. a launcher
 2. a program status monitor
 3. a resource conflict manager
+4. a quick-access web launcher
 
 Instead of manually remembering what can run together, the panel can block incompatible combinations automatically.
 
@@ -69,6 +74,8 @@ The main panel shows the operational buttons:
 
 Each button can show a visible **RUN** indicator when the corresponding program is active.
 
+Below the main applications, the panel can also show a **Webs rápidas** area with small independent web buttons for useful pages that are not tied to any specific program.
+
 ### Configuration screen
 
 The configuration screen lets you:
@@ -79,6 +86,7 @@ The configuration screen lets you:
 - add resources
 - delete resources
 - edit the resources assigned to each program
+- manage global quick web buttons
 
 The lower log/status area can be hidden in configuration mode to free vertical space.
 
@@ -103,6 +111,7 @@ Important files:
 ~/radio/conf/radio.env
 ~/radio/conf/actions.json
 ~/radio/conf/resources.json
+~/radio/conf/web_links.json
 ~/radio/bin/*.sh
 ~/radio/logs/*.log
 ~/radio/run/*.pid
@@ -170,18 +179,18 @@ Stores station and application configuration, for example:
 
 ### `actions.json`
 
-Stores all managed program entries, including built-in and user-added programs.
+Stores all managed program entries, including:
 
-Each program can define things like:
+- built-in programs
+- user-added programs
+- program kinds
+- scripts
+- icons
+- button colors
+- PAT compatibility
+- resource assignments
 
-- title
-- subtitle
-- icon
-- color/style
-- program kind
-- start/stop/status scripts
-- whether it is allowed while PAT is active
-- resources used
+Because built-in programs are also managed through `actions.json`, their resource assignments can be edited from the GUI without hand-editing the file.
 
 ### `resources.json`
 
@@ -196,6 +205,12 @@ Typical resources might be:
 - `serial_ch340`
 - `usb_codec`
 - `rig_ic7300`
+
+### `web_links.json`
+
+Stores the independent **quick web buttons** shown on the main panel.
+
+These pages are global and do not need to be attached to any application.
 
 ---
 
@@ -296,6 +311,12 @@ Example:
   - `sdrangel-stop.sh`
   - `sdrangel-status.sh`
 
+### Resource selection in the GUI
+
+Resource selection is done with **checkboxes**, not by manually typing comma-separated lists.
+
+This makes assignment easier and reduces mistakes.
+
 ---
 
 ## Deleting a program
@@ -336,7 +357,7 @@ Optionally, when deleting a resource, the panel can remove that resource from pr
 
 ### Edit program resources
 
-You can assign resources to any program, including the preconfigured ones, from the GUI.
+You can assign resources to **any** managed program, including the preconfigured ones, from the GUI.
 
 This avoids manual JSON editing.
 
@@ -374,7 +395,36 @@ Typical built-in buttons in the project:
 - PAT
 - Radiosonde
 
-Their commands, styles, icons, and resource assignments can also be managed through `actions.json`.
+Their commands, styles, icons, and resource assignments are also managed through `actions.json`.
+
+---
+
+## Quick web buttons
+
+The panel can show a separate **Webs rápidas** section below the application buttons.
+
+These buttons are:
+
+- smaller than the main application buttons
+- visually secondary
+- independent from all programs
+- useful for pages you want always available
+
+Examples:
+
+- station maps
+- Sondehub
+- APRS sites
+- documentation
+- web-based dashboards
+
+Quick web buttons are managed from the GUI and stored in `web_links.json`.
+
+Each entry uses the format:
+
+```text
+Title | URL
+```
 
 ---
 
@@ -400,6 +450,7 @@ The lower status area is used to show:
 - generated template information
 - resource changes
 - program add/delete actions
+- quick web actions
 
 Autoscroll can be enabled so the most recent line is always visible.
 
@@ -413,6 +464,7 @@ Autoscroll can be enabled so the most recent line is always visible.
 4. Launch compatible software if resources allow it
 5. Incompatible buttons remain blocked
 6. Use the configuration page to adjust resources or add new programs
+7. Open useful pages through the global quick web buttons
 
 ---
 
@@ -446,6 +498,10 @@ Check:
 - resource conflicts
 - tooltip text for the reason
 
+### Quick web buttons do not open the expected browser behavior
+
+Global web buttons use the system browser opening mechanism. Window/tab behavior depends on the configured browser.
+
 ---
 
 ## Suggested future improvements
@@ -464,4 +520,3 @@ Check:
 ## License
 
 This project is released under the **MIT License**.
-
